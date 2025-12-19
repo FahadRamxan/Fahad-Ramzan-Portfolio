@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Portfolio Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --bg-primary: #f8fafc;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --border: rgba(226, 232, 240, 0.8);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem 4rem;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(90deg, transparent 0%, rgba(99, 102, 241, 0.03) 50%, transparent 100%),
+                linear-gradient(0deg, transparent 0%, rgba(236, 72, 153, 0.03) 50%, transparent 100%);
+            pointer-events: none;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.6s ease-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            color: white;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.03em;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            font-size: 2.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.125rem;
+            font-weight: 400;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.5);
+            border-color: rgba(99, 102, 241, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stat-card:nth-child(4) .stat-icon {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .stat-info h3 {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0.5rem 0;
+            letter-spacing: -0.03em;
+            text-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .stat-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        /* Charts Section */
+        .charts-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .chart-card:nth-child(odd) { animation-delay: 0.5s; }
+        .chart-card:nth-child(even) { animation-delay: 0.6s; }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(236, 72, 153, 0.3);
+            border-color: rgba(236, 72, 153, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-icon {
+            font-size: 1.5rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Tables */
+        .table-container {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out backwards;
+            animation-delay: 0.7s;
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9375rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .badge-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.95);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+
+        .flag {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        /* Rank Badge */
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .rank-1 {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #795548;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        }
+
+        .rank-2 {
+            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+            color: #424242;
+            box-shadow: 0 4px 12px rgba(192, 192, 192, 0.4);
+        }
+
+        .rank-3 {
+            background: linear-gradient(135deg, #cd7f32 0%, #daa520 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(205, 127, 50, 0.4);
+        }
+
+        .rank-other {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.5rem 6rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-value {
+                font-size: 2.25rem;
+            }
+
+            .chart-container {
+                height: 250px;
+            }
+
+            .table-container {
+                padding: 1.25rem;
+            }
+
+            th, td {
+                padding: 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            .refresh-btn {
+                bottom: 1rem;
+                right: 1rem;
+                width: 56px;
+                height: 56px;
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>
+            <span class="header-icon">📊</span>
+            Analytics Dashboard
+        </h1>
+        <p>Real-time visitor insights for your portfolio</p>
+    </div>
+
+    <div class="container">
+        <!-- Key Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <h3>Total Visits</h3>
+                    </div>
+                </div>
+                <div class="stat-value" id="totalVisits">0</div>
+                <div class="stat-change">↑ All time</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">✨</div>
+                    <div class="stat-info">
+                        <h3>Unique Visitors</h3>
+                    </div>
+                </div>
+                <div class="stat-value" id="uniqueVisitors">0</div>
+                <div class="stat-change">↑ Unique IPs</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">🌍</div>
+                    <div class="stat-info">
+                        <h3>Countries</h3>
+                    </div>
+                </div>
+                <div class="stat-value" id="totalCountries">0</div>
+                <div class="stat-change">↑ Global reach</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <h3>Last 30 Days</h3>
+                    </div>
+                </div>
+                <div class="stat-value" id="recentVisits">0</div>
+                <div class="stat-change">↑ Recent activity</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-section">
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2><span class="chart-icon">📅</span> Visits Over Time</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="visitsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2><span class="chart-icon">🗺️</span> Top Countries</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="countriesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2><span class="chart-icon">🌐</span> Browsers</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="browsersChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2><span class="chart-icon">📱</span> Devices</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="devicesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2><span class="chart-icon">🏆</span> Top Locations</h2>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Country</th>
+                            <th>Visits</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="countriesTable">
+                        <tr><td colspan="4" class="loading">Loading data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2><span class="chart-icon">🏙️</span> Top Cities</h2>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>City</th>
+                            <th>Visits</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="citiesTable">
+                        <tr><td colspan="4" class="loading">Loading data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h2><span class="chart-icon">🕐</span> Recent Visits</h2>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Location</th>
+                            <th>Page</th>
+                            <th>Device</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentVisitsTable">
+                        <tr><td colspan="4" class="loading">Loading data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="loadAnalytics()" title="Refresh Data">
+        🔄
+    </button>
+
+    <script>
+        let charts = {};
+
+        // Country code to flag emoji
+        function getFlagEmoji(countryCode) {
+            if (!countryCode || countryCode === 'Unknown') return '🌍';
+            const codePoints = countryCode
+                .toUpperCase()
+                .split('')
+                .map(char => 127397 + char.charCodeAt());
+            return String.fromCodePoint(...codePoints);
+        }
+
+        // Format date/time
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Chart colors
+        const chartColors = {
+            primary: ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b', '#38f9d7', '#fa709a', '#fee140'],
+            gradient: {
+                purple: {
+                    start: 'rgba(102, 126, 234, 0.8)',
+                    end: 'rgba(118, 75, 162, 0.2)'
+                }
+            }
+        };
+
+        // Load analytics data
+        async function loadAnalytics() {
+            try {
+                const response = await fetch('/api/analytics');
+                const data = await response.json();
+
+                // Update statistics
+                document.getElementById('totalVisits').textContent = data.totalVisits.toLocaleString();
+                document.getElementById('uniqueVisitors').textContent = data.uniqueVisitors.toLocaleString();
+                document.getElementById('totalCountries').textContent = data.visitsByCountry.length;
+                
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                const recentCount = data.recentVisits.filter(v => 
+                    new Date(v.timestamp) > thirtyDaysAgo
+                ).length;
+                document.getElementById('recentVisits').textContent = recentCount.toLocaleString();
+
+                // Update charts
+                updateVisitsChart(data.visitsByDay);
+                updateCountriesChart(data.visitsByCountry);
+                updateBrowsersChart(data.browsers);
+                updateDevicesChart(data.devices);
+
+                // Update tables
+                updateCountriesTable(data.visitsByCountry, data.totalVisits);
+                updateCitiesTable(data.visitsByCity, data.totalVisits);
+                updateRecentVisitsTable(data.recentVisits);
+
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        }
+
+        // Update visits over time chart
+        function updateVisitsChart(visitsByDay) {
+            const ctx = document.getElementById('visitsChart').getContext('2d');
+            
+            if (charts.visits) charts.visits.destroy();
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, chartColors.gradient.purple.start);
+            gradient.addColorStop(1, chartColors.gradient.purple.end);
+
+            charts.visits = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: visitsByDay.map(d => new Date(d[0]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                    datasets: [{
+                        label: 'Daily Visits',
+                        data: visitsByDay.map(d => d[1]),
+                        borderColor: '#667eea',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            padding: 12,
+                            borderRadius: 8,
+                            titleFont: { size: 14, weight: '600' },
+                            bodyFont: { size: 13 }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0,
+                                color: '#64748b',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.1)',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update countries chart
+        function updateCountriesChart(visitsByCountry) {
+            const ctx = document.getElementById('countriesChart').getContext('2d');
+            
+            if (charts.countries) charts.countries.destroy();
+
+            const top5 = visitsByCountry.slice(0, 5);
+
+            charts.countries = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: top5.map(c => c[0]),
+                    datasets: [{
+                        data: top5.map(c => c[1]),
+                        backgroundColor: chartColors.primary,
+                        borderWidth: 3,
+                        borderColor: '#fff',
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: { size: 13, weight: '500' },
+                                color: '#0f172a',
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            padding: 12,
+                            borderRadius: 8,
+                            titleFont: { size: 14, weight: '600' },
+                            bodyFont: { size: 13 }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        // Update browsers chart
+        function updateBrowsersChart(browsers) {
+            const ctx = document.getElementById('browsersChart').getContext('2d');
+            
+            if (charts.browsers) charts.browsers.destroy();
+
+            charts.browsers = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: browsers.map(b => b[0]),
+                    datasets: [{
+                        label: 'Visits',
+                        data: browsers.map(b => b[1]),
+                        backgroundColor: chartColors.primary,
+                        borderRadius: 10,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            padding: 12,
+                            borderRadius: 8,
+                            titleFont: { size: 14, weight: '600' },
+                            bodyFont: { size: 13 }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0,
+                                color: '#64748b',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.1)',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update devices chart
+        function updateDevicesChart(devices) {
+            const ctx = document.getElementById('devicesChart').getContext('2d');
+            
+            if (charts.devices) charts.devices.destroy();
+
+            charts.devices = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: devices.map(d => d[0]),
+                    datasets: [{
+                        data: devices.map(d => d[1]),
+                        backgroundColor: ['#667eea', '#f093fb', '#43e97b'],
+                        borderWidth: 3,
+                        borderColor: '#fff',
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: { size: 13, weight: '500' },
+                                color: '#0f172a',
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            padding: 12,
+                            borderRadius: 8,
+                            titleFont: { size: 14, weight: '600' },
+                            bodyFont: { size: 13 }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        // Get rank badge HTML
+        function getRankBadge(rank) {
+            const classes = rank <= 3 ? `rank-${rank}` : 'rank-other';
+            return `<span class="rank-badge ${classes}">${rank}</span>`;
+        }
+
+        // Update countries table
+        function updateCountriesTable(visitsByCountry, totalVisits) {
+            const tbody = document.getElementById('countriesTable');
+            tbody.innerHTML = visitsByCountry.map((country, index) => {
+                const percentage = ((country[1] / totalVisits) * 100).toFixed(1);
+                return `
+                    <tr>
+                        <td>${getRankBadge(index + 1)}</td>
+                        <td><strong>${country[0]}</strong></td>
+                        <td><span class="badge badge-primary">${country[1].toLocaleString()}</span></td>
+                        <td>${percentage}%</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Update cities table
+        function updateCitiesTable(visitsByCity, totalVisits) {
+            const tbody = document.getElementById('citiesTable');
+            tbody.innerHTML = visitsByCity.map((city, index) => {
+                const percentage = ((city[1] / totalVisits) * 100).toFixed(1);
+                return `
+                    <tr>
+                        <td>${getRankBadge(index + 1)}</td>
+                        <td><strong>${city[0]}</strong></td>
+                        <td><span class="badge badge-primary">${city[1].toLocaleString()}</span></td>
+                        <td>${percentage}%</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Update recent visits table
+        function updateRecentVisitsTable(recentVisits) {
+            const tbody = document.getElementById('recentVisitsTable');
+            tbody.innerHTML = recentVisits.slice(0, 20).map(visit => {
+                const location = visit.location 
+                    ? `${getFlagEmoji(visit.location.countryCode)} ${visit.location.city}, ${visit.location.country}`
+                    : '🌍 Unknown';
+                
+                const device = /Mobile/i.test(visit.userAgent) ? '📱 Mobile' : '💻 Desktop';
+                
+                return `
+                    <tr>
+                        <td><strong>${formatDateTime(visit.timestamp)}</strong></td>
+                        <td>${location}</td>
+                        <td><span class="badge badge-success">${visit.page}</span></td>
+                        <td>${device}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load data on page load
+        loadAnalytics();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadAnalytics, 30000);
+    </script>
+</body>
+</html>

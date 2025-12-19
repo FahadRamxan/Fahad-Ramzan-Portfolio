@@ -6,19 +6,19 @@
 }
 
 :root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --secondary-gradient: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
-    --accent-gradient: linear-gradient(135deg, #7f00ff 0%, #e100ff 100%);
-    --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    --text-dark: #1a1a2e;
-    --text-light: #6b7280;
-    --bg-light: #f9fafb;
+    --primary-gradient: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    --secondary-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    --accent-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    --dark-gradient: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    --text-dark: #000000;
+    --text-light: #4a4a4a;
+    --bg-light: #ffffff;
     --white: #ffffff;
     --black: #000000;
-    --purple: #667eea;
-    --purple-dark: #764ba2;
-    --shadow: 0 10px 40px rgba(102, 126, 234, 0.15);
-    --shadow-hover: 0 20px 60px rgba(102, 126, 234, 0.25);
+    --yellow: #FFD700;
+    --yellow-dark: #FFA500;
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    --shadow-hover: 0 20px 60px rgba(255, 215, 0, 0.25);
 }
 
 html {
@@ -124,7 +124,7 @@ body {
 .nav-logo {
     font-size: 1.8rem;
     font-weight: 700;
-    background: var(--primary-gradient);
+    background: var(--secondary-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -157,7 +157,7 @@ body {
     left: 0;
     width: 0;
     height: 2px;
-    background: var(--primary-gradient);
+    background: var(--secondary-gradient);
     transition: width 0.3s ease;
 }
 
@@ -185,7 +185,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #667eea 100%);
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #FFD700 100%);
     background-size: 200% 200%;
     animation: gradient-shift 15s ease infinite;
     position: relative;
@@ -291,9 +291,10 @@ body {
 }
 
 .btn-primary {
-    background: var(--white);
-    color: var(--purple);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: var(--yellow);
+    color: var(--black);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    font-weight: 700;
 }
 
 .btn-primary:hover {
@@ -308,8 +309,8 @@ body {
 }
 
 .btn-secondary:hover {
-    background: var(--white);
-    color: var(--purple);
+    background: var(--yellow);
+    color: var(--black);
     transform: translateY(-3px);
 }
 
@@ -333,8 +334,8 @@ body {
 }
 
 .social-icon:hover {
-    background: var(--white);
-    color: var(--purple);
+    background: var(--yellow);
+    color: var(--black);
     transform: translateY(-5px);
 }
 
@@ -400,7 +401,7 @@ section {
     transform: translateX(-50%);
     width: 60px;
     height: 4px;
-    background: var(--primary-gradient);
+    background: var(--secondary-gradient);
     border-radius: 2px;
 }
 
@@ -449,7 +450,7 @@ section {
 .stat-number {
     font-size: 3rem;
     font-weight: 700;
-    background: var(--primary-gradient);
+    background: var(--secondary-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -480,7 +481,7 @@ section {
     top: 0;
     bottom: 0;
     width: 4px;
-    background: var(--primary-gradient);
+    background: var(--secondary-gradient);
 }
 
 .timeline-item {
@@ -497,8 +498,8 @@ section {
     height: 20px;
     border-radius: 50%;
     background: var(--white);
-    border: 4px solid var(--purple);
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+    border: 4px solid var(--yellow);
+    box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.2);
 }
 
 .timeline-content {
@@ -521,7 +522,7 @@ section {
 }
 
 .timeline-company {
-    color: var(--purple);
+    color: var(--yellow);
     font-weight: 600;
     margin-bottom: 0.5rem;
 }
@@ -566,7 +567,7 @@ section {
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--primary-gradient);
+    background: var(--secondary-gradient);
     transform: scaleX(0);
     transition: transform 0.3s ease;
 }
@@ -582,7 +583,7 @@ section {
 
 .skill-icon {
     font-size: 3rem;
-    background: var(--primary-gradient);
+    background: var(--secondary-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -629,7 +630,7 @@ section {
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--primary-gradient);
+    background: var(--secondary-gradient);
     transform: scaleX(0);
     transition: transform 0.3s ease;
 }
@@ -650,7 +651,7 @@ section {
 }
 
 .project-type {
-    color: var(--purple);
+    color: var(--yellow);
     font-weight: 600;
     font-size: 0.9rem;
     margin-bottom: 1rem;
@@ -669,8 +670,8 @@ section {
 }
 
 .tag {
-    background: var(--primary-gradient);
-    color: var(--white);
+    background: var(--secondary-gradient);
+    color: var(--black);
     padding: 0.4rem 1rem;
     border-radius: 20px;
     font-size: 0.85rem;
@@ -719,11 +720,11 @@ section {
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    background: var(--primary-gradient);
+    background: var(--secondary-gradient);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--white);
+    color: var(--black);
     font-size: 1.2rem;
 }
 
@@ -749,18 +750,18 @@ section {
 
 .form-input:focus {
     outline: none;
-    border-color: var(--purple);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: var(--yellow);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
 }
 
 .contact-form .btn-primary {
-    background: var(--primary-gradient);
-    color: var(--white);
+    background: var(--secondary-gradient);
+    color: var(--black);
 }
 
 /* Footer */
 .footer {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
     color: var(--white);
     padding: 2rem 20px;
     text-align: center;
@@ -785,8 +786,8 @@ section {
 }
 
 .footer .social-icon:hover {
-    background: var(--white);
-    color: var(--text-dark);
+    background: var(--yellow);
+    color: var(--black);
 }
 
 /* Responsive Design */
