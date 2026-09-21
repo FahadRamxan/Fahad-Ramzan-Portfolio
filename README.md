@@ -1,105 +1,83 @@
-# Fahad Ramzan - Portfolio
+# Fahad Ramzan — Portfolio
 
-Professional portfolio website for Fahad Ramzan - Data Analyst, Data Scientist, and AI Automation Engineer.
+A modern, animated portfolio for **Fahad Ramzan**, AI Engineer. Built with React, Vite, Tailwind CSS, and Framer Motion, with a dark indigo/violet aesthetic and a **live GitHub activity** section that pulls real-time data from the GitHub API.
 
-## 🌟 Features
+🔗 **Live:** https://fahadramxan.github.io/Fahad-Ramzan-Portfolio/
 
-- ⚡ Modern, responsive design
-- 🎨 Beautiful animations and transitions
-- 📱 Mobile-friendly
-- 📊 **Built-in Analytics** (Track visitors and their locations!)
-- 🚀 Fast and optimized
-- 💼 Showcases experience, skills, and projects
+## ✨ Features
 
-## 📊 Analytics Dashboard
+- **Framer Motion** throughout — scroll reveals, staggered entrances, an animated hero, filterable projects, and a detail modal.
+- **Live GitHub data** — public repos, followers, total stars, most-used languages, and recent repositories pulled from the GitHub REST API at load time (cached per tab session).
+- **Filterable projects** with a category filter and per-project detail modal.
+- **Fully responsive** — mobile, tablet, and desktop, with an animated mobile menu.
+- **Accessible & fast** — semantic HTML, keyboard-operable controls, `prefers-reduced-motion` support, and an optimized hero image (WebP, ~15 KB).
+- **Content-driven** — everything lives in one file (`src/data/content.js`), sourced from the résumé.
 
-This portfolio now includes built-in analytics to track visitors and their locations!
+## 🛠️ Tech Stack
 
-### Two Options Available:
+| Area        | Tech                                   |
+| ----------- | -------------------------------------- |
+| Framework   | React 18 + Vite 6                      |
+| Styling     | Tailwind CSS 3                         |
+| Animation   | Framer Motion 11                       |
+| Icons       | lucide-react                           |
+| Deployment  | GitHub Pages (GitHub Actions)          |
 
-1. **Google Analytics** - Easy 2-minute setup
-2. **Custom Analytics Dashboard** - Beautiful custom dashboard with full control
+## 🚀 Local Development
 
-See [QUICKSTART.md](QUICKSTART.md) for setup instructions.
-
-## 🚀 Quick Start
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/FahadRamxan/Fahad-Ramzan-Portfolio.git
-   cd Fahad-Ramzan-Portfolio
-   ```
-
-2. **Open locally**
-   - Simply open `index.html` in your browser
-   - Or use a local server (recommended)
-
-3. **Set up Analytics** (Optional)
-   - See [QUICKSTART.md](QUICKSTART.md) for analytics setup
-   - Choose between Google Analytics or Custom Dashboard
-
-## 📁 Project Structure
-
-```
-├── index.html              # Main HTML file
-├── style.css               # Styles
-├── script.js               # Interactive features
-├── analytics-tracker.js    # Analytics tracking script
-├── analytics-backend/      # Custom analytics backend
-│   ├── server.js          # Node.js server
-│   ├── public/
-│   │   └── dashboard.html # Analytics dashboard
-│   └── package.json
-├── QUICKSTART.md          # Quick setup guide
-└── ANALYTICS_SETUP.md     # Detailed analytics guide
+```bash
+npm install
+npm run dev      # http://localhost:5173
 ```
 
-## 🛠️ Technologies Used
+```bash
+npm run build    # production build → dist/
+npm run preview  # preview the production build
+```
 
-- HTML5
-- CSS3 (with custom animations)
-- JavaScript (Vanilla JS)
-- Font Awesome Icons
-- Node.js + Express (for custom analytics)
-- Chart.js (for analytics visualizations)
+## 📁 Structure
 
-## 📈 Analytics Features
+```
+├── index.html                # Vite entry + meta/OG tags
+├── src/
+│   ├── main.jsx              # React entry
+│   ├── App.jsx               # Section composition
+│   ├── index.css            # Tailwind + design tokens
+│   ├── data/content.js      # ← single source of truth (résumé content)
+│   ├── lib/                 # motion variants, GitHub hook, helpers
+│   └── components/          # Hero, About, Experience, Skills,
+│       └── ui/              # Projects, GitHubActivity, Contact, …
+├── public/                   # photo (webp/png), resume PDF, favicon
+├── .github/workflows/deploy.yml
+└── legacy-site/              # the previous vanilla HTML/CSS/JS site
+```
 
-When set up, you can track:
-- ✅ Total visitors and unique visitors
-- ✅ Visitor locations (countries and cities)
-- ✅ Devices (mobile, desktop, tablet)
-- ✅ Browsers used
-- ✅ Visit times and trends
-- ✅ Page views
-- ✅ Beautiful visual charts and maps
+## ✏️ Editing Content
+
+All text — profile, experience, projects, skills, education, certifications —
+lives in [`src/data/content.js`](src/data/content.js). Update that one file and
+the whole site updates. No component changes needed for content edits.
+
+To receive contact-form submissions in your inbox, paste a
+[Formspree](https://formspree.io) endpoint into `FORM_ENDPOINT` in
+`src/components/Contact.jsx`. Left empty, the form opens the visitor's email
+client pre-filled (zero-config).
 
 ## 🌐 Deployment
 
-Deploy your portfolio to:
-- **GitHub Pages** (Free)
-- **Netlify** (Free)
-- **Vercel** (Free)
-- **Cloudflare Pages** (Free)
+Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds the site
+and deploys `dist/` to GitHub Pages. Enable it once under **Settings → Pages →
+Build and deployment → Source → GitHub Actions**.
 
-For the custom analytics backend:
-- **Render** (Free tier available)
-- **Railway** (Free tier available)
-- **Heroku**
-
-See [ANALYTICS_SETUP.md](ANALYTICS_SETUP.md) for deployment instructions.
-
-## 📄 License
-
-© 2025 Fahad Ramzan. All rights reserved.
+The Vite `base` is set to `/Fahad-Ramzan-Portfolio/` for the project page. If you
+move this to a custom domain or a user page, update `base` in `vite.config.js`.
 
 ## 📧 Contact
 
-- **Email**: fahadramxan01@gmail.com
-- **LinkedIn**: [linkedin.com/in/fahad-ramxan](https://linkedin.com/in/fahad-ramxan)
-- **GitHub**: [github.com/FahadRamxan](https://github.com/FahadRamxan)
-- **Phone**: +92 314-5428368
+- **Email:** fahadramxan01@gmail.com
+- **LinkedIn:** [linkedin.com/in/fahad-ramxan](https://linkedin.com/in/fahad-ramxan)
+- **GitHub:** [github.com/FahadRamxan](https://github.com/FahadRamxan)
 
 ---
 
-Made with ❤️ by Fahad Ramzan
+© 2026 Fahad Ramzan. Built with React, Framer Motion & Tailwind.
