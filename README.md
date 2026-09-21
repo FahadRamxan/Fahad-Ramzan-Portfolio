@@ -48,7 +48,7 @@ npm run preview  # preview the production build
 │   └── components/          # Hero, About, Experience, Skills,
 │       └── ui/              # Projects, GitHubActivity, Contact, …
 ├── public/                   # photo (webp/png), resume PDF, favicon
-├── .github/workflows/deploy.yml
+├── docs/                     # built site served by GitHub Pages
 └── legacy-site/              # the previous vanilla HTML/CSS/JS site
 ```
 
@@ -65,12 +65,23 @@ client pre-filled (zero-config).
 
 ## 🌐 Deployment
 
-Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds the site
-and deploys `dist/` to GitHub Pages. Enable it once under **Settings → Pages →
-Build and deployment → Source → GitHub Actions**.
+The production build is committed to `docs/` and served by GitHub Pages natively
+(no CI required). One-time setup: **Settings → Pages → Build and deployment →
+Source → Deploy from a branch → `main` / `docs`**.
 
-The Vite `base` is set to `/Fahad-Ramzan-Portfolio/` for the project page. If you
-move this to a custom domain or a user page, update `base` in `vite.config.js`.
+To publish an update:
+
+```bash
+npm run build                                  # outputs to docs/
+git add docs && git commit -m "Deploy" && git push
+```
+
+The Vite `base` is `/Fahad-Ramzan-Portfolio/` for the project page — update it in
+`vite.config.js` if you move to a custom domain or user page.
+
+> A GitHub Actions workflow can auto-build on push instead (set Pages Source to
+> "GitHub Actions"), but that requires GitHub Actions to be enabled/unblocked on
+> the account.
 
 ## 📧 Contact
 

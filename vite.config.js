@@ -7,4 +7,10 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({ command }) => ({
   base: command === 'build' ? '/Fahad-Ramzan-Portfolio/' : '/',
   plugins: [react()],
+  build: {
+    // Build into /docs so GitHub Pages can serve it natively
+    // ("Deploy from a branch" → main → /docs), no CI/Actions required.
+    outDir: 'docs',
+    emptyOutDir: true,
+  },
 }))
